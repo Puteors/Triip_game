@@ -16,6 +16,7 @@ class Scene1 extends Phaser.Scene {
         this.load.image('name', 'assets/Scene/UI_id_name.png');
         this.load.image('stamina', 'assets/Scene/UI_id_stamina.png');
 
+        this.load.image('obstacle', 'assets/Scene/Scene1/PNG/obstacle-01-shortened.png')
     }
 
     create() {

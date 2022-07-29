@@ -2,6 +2,7 @@ class Scene2 extends Phaser.Scene {
     constructor() {
         super("playGame");
         this.isRunning = true;
+        
     }
     create () {
         this.platforms = this.physics.add.staticGroup();
@@ -22,25 +23,54 @@ class Scene2 extends Phaser.Scene {
         });
         
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.background2 = this.add.tileSprite(0, 0, 7680, 1080, 'layout3').setOrigin(0);
+        
         this.cameras.main.setBounds(0, 0, 4320, 1080)
         this.myCam = this.cameras.main.startFollow(this.player);
-        this.statusHpBar = this.add.image(100,100, 'name').setOrigin(0).setScrollFactor(0);
+
+        this.obstacle = this.physics.add.group({
+            key:'obstacle',
+            repeate: 0,
+            setXY: { x: 1080, y: 100 },
+            setScale: {x: 0.8, y:0.8}
+        }) 
+
+        this.physics.add.collider(this.obstacle, this.platforms);
+
+        this.background2 = this.add.tileSprite(0, 0, 7680, 1080, 'layout3').setOrigin(0);
+        this.add.image(100 , 100, 'name').setOrigin(0).setScrollFactor(0);
+        this.add.image(400,100, 'hp').setOrigin(0).setScrollFactor(0);
+        this.add.image(700,100, 'mana').setOrigin(0).setScrollFactor(0);
+        this.add.image(1000,100, 'morale').setOrigin(0).setScrollFactor(0);
+        this.add.image(1300,100, 'stamina').setOrigin(0).setScrollFactor(0);
+
+        function impact(player, obstacle)  {
+            this.isRunning = false;
+        }
+
+ 
+        this.physics.add.overlap(this.player, this.obstacle, impact, null, this);
+
+        if(this.isRunning === false) {
+            this.button = this.add.image( 1080 , 400, 'morale');
+        }
         
     }
+    
 
     update () {
+        
         if(this.isRunning){
             this.background.tilePositionX = this.myCam.scrollX * .3;
         
             this.background2.tilePositionX = this.myCam.scrollX * .5;
-            this.player.setVelocityX(160);
+            this.player.setVelocityX(320);
 
-            this.player.anims.play('move', true);
+            this.player.anims.play('move', this.isRunning);
         }
-        if (this.cursors.right.isDown) {
-            this.isRunning = true;
+        else {
+            this.player.anims.play('move', this.isRunning);
+            this.player.setVelocityX(0);
+
         }
-        
     }
 } 
